@@ -66,3 +66,58 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ├── package.json        
 └── README.md          
 ```
+
+## Problèmes
+
+### Problème avec NodeJS
+J'ai eu un problème concernant la version de nodeJS, donc j'ai du rajouter quelques lignes dans le Jenkinsfile pour spécifier le tool utilisé pour nodejs :
+
+```
+tools {
+        nodejs "NodeJS-18"
+    }
+```
+
+Il m'a fallu donc créér un tool pour nodeJs en spécifiant la version 18 à utiliser...
+Dans manage jenkins > tools > nodeJS (avec le plugin NodeJS installé)
+
+### Problèmes avec publishTestResults
+
+J'ai eu une erreur :
+
+```
+java.lang.NoSuchMethodError: No such DSL method 'publishTestResults' found among steps [...]
+```
+
+J'ai donc utilisé Junit et remplacer au niveau du post dans "Run tests" :
+
+```
+post {
+    always {
+        junit 'test-results/junit.xml'
+    }
+}
+```
+
+Et pour générer ce fichier junit.xml, j'ai installé jest-junit :
+
+```
+npm install --save-dev jest-junit
+```
+
+Et ensuite j'ai rajouté des lignes dans le fichier package.json pour spécifier ou creer le report:
+
+```
+"jest": {
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test-results",
+          "outputName": "junit.xml"
+        }
+      ]
+    ]
+  }
+```
