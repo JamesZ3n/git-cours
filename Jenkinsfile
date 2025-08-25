@@ -16,10 +16,6 @@ pipeline {
             steps {
                 echo 'Récupération du code source...'
                 checkout scm
-
-                echo "Nom de la branche détectée : ${env.BRANCH_NAME}"
-                sh 'git branch --show-current'
-                sh 'git rev-parse --abbrev-ref HEAD'
             }
         }
         
