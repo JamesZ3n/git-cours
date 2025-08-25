@@ -49,3 +49,7 @@ function updateTimestamp() {
         timestampElement.textContent = new Date().toLocaleString('fr-FR');
     }
 }
+
+function squareNumber(num) {
+    return num * num;
+}
