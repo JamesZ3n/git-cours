@@ -74,7 +74,6 @@ pipeline {
         }
         
         stage('Deploy to Staging') {
-            echo "Branch: ${BRANCH_NAME}"
             when {
                 branch 'develop'
             }
@@ -89,7 +88,6 @@ pipeline {
         }
 
         stage('Deploy to Production') {
-            echo "Branch: ${BRANCH_NAME}"
             when {
                 branch 'main'
             }
