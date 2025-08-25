@@ -87,6 +87,8 @@ pipeline {
             }
         }
         
+        echo "Branch: ${BRANCH_NAME}"
+        
         stage('Deploy to Production') {
             when {
                 branch 'main'
