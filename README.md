@@ -67,9 +67,11 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 └── README.md          
 ```
 
-## Problèmes
+## Exercices
 
-### Problème avec NodeJS
+### Exercice 1
+
+#### Problème n°1
 J'ai eu un problème concernant la version de nodeJS, donc j'ai du rajouter quelques lignes dans le Jenkinsfile pour spécifier le tool utilisé pour nodejs :
 
 ```
@@ -81,7 +83,7 @@ tools {
 Il m'a fallu donc créér un tool pour nodeJs en spécifiant la version 18 à utiliser...
 Dans manage jenkins > tools > nodeJS (avec le plugin NodeJS installé)
 
-### Problèmes avec publishTestResults
+#### Problème n°2
 
 J'ai eu une erreur :
 
@@ -121,3 +123,5 @@ Et ensuite j'ai rajouté des lignes dans le fichier package.json pour spécifier
     ]
   }
 ```
+
+### Exercice 2
