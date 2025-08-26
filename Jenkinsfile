@@ -88,6 +88,7 @@ pipeline {
         }
 
         stage('Deploy to Production') {
+            
             when {
                 branch 'main'
             }
@@ -97,7 +98,7 @@ pipeline {
                     echo "Utilisateur courant : $(whoami)"
                     echo "UID/GID : $(id)"
                     echo "Répertoire courant : $(pwd)"
-
+                    
                     echo "Sauvegarde de la version précédente..."
                     if [ -d "${DEPLOY_DIR}" ]; then
                         cp -r ${DEPLOY_DIR} ${DEPLOY_DIR}_backup_$(date +%Y%m%d_%H%M%S)
