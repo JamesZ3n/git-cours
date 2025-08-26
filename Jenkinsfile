@@ -44,17 +44,19 @@ pipeline {
 
         stage('Coverage') {
             steps {
-                echo 'Vérification de l’existence du fichier coverage/cobertura-coverage.xml...'
-                sh '''
-                    if [ -f coverage/cobertura-coverage.xml ]; then
-                        echo "✅ Fichier trouvé !"
-                    else
-                        echo "❌ Fichier introuvable !"
-                        exit 1
-                    fi
-                '''
-                    }
+                echo 'Analyse de la couverture...'
+                recordCoverage(
+                    tools: [cobertura(pattern: 'coverage/cobertura-coverage.xml')],
+                    failOnError: true,
+                    sourceCodeRetention: 'NEVER',
+                    qualityGates: [
+                        [threshold: 80.0, metric: 'LINE', type: 'TOTAL'],
+                        [threshold: 70.0, metric: 'BRANCH', type: 'TOTAL']
+                    ]
+                )
+            }
         }
+
 
         
         stage('Code Quality Check') {
