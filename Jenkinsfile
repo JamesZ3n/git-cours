@@ -48,8 +48,7 @@ pipeline {
                     tools: [
                         coberturaAdapter(pattern: 'coverage/cobertura-coverage.xml')
                     ],
-                    failNoReports: true,
-                    failUnhealthy: true
+                    failOnError: true
                 )
             }
         }
