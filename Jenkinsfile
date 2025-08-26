@@ -46,9 +46,10 @@ pipeline {
             steps {
                 recordCoverage(
                     tools: [
-                        coberturaAdapter(pattern: 'coverage/cobertura-coverage.xml')
+                        [type: 'Cobertura', pattern: 'coverage/cobertura-coverage.xml']
                     ],
-                    failOnError: true
+                    failNoReports: true,
+                    failUnhealthy: true
                 )
             }
         }
