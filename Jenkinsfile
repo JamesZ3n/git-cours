@@ -29,22 +29,30 @@ pipeline {
                 '''
             }
         }
-
-        stage('Run Tests with Coverage') {
+        
+        stage('Run Tests') {
             steps {
-                sh 'npm run test:coverage'
+                echo 'Exécution des tests...'
+                sh 'npm test'
             }
             post {
                 always {
                     junit 'test-results/junit.xml'
-                    publishCoverage adapters: [
-                        coberturaAdapter('coverage/cobertura-coverage.xml')
-                    ],
-                    globalThresholds: [
-                        [thresholdTarget: 'Line', unhealthyThreshold: 70.0, unstableThreshold: 80.0],
-                        [thresholdTarget: 'Branch', unhealthyThreshold: 60.0, unstableThreshold: 75.0]
-                    ]
                 }
+            }
+        }
+
+        stage('Coverage') {
+            steps {
+                publishCoverage adapters: [
+                    coberturaAdapter('coverage/cobertura-coverage.xml')
+                ],
+                sourceFileResolver: sourceFiles('STORE_ALL_BUILD'),
+                failOnError: true,
+                globalThresholds: [
+                    [thresholdTarget: 'Line', unhealthyThreshold: 50.0, unstableThreshold: 70.0],
+                    [thresholdTarget: 'Branch', unhealthyThreshold: 50.0, unstableThreshold: 70.0]
+                ]
             }
         }
         

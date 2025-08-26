@@ -143,3 +143,7 @@ J'ai déplacé ma fonction "squareNumber" dans "utils.js" et ensuite j'ai créé
 J'ai ensuite résolu ce test, qui vérifie qu'un nombre est mis au carré ".
 
 ### Exercice 4
+
+1. Ajout de notifications
+
+

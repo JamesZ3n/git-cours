@@ -5,11 +5,10 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest",
+    "test": "jest --coverage",
     "build": "npm run copy-files",
     "copy-files": "mkdir -p dist && cp -r src/* dist/",
-    "clean": "rm -rf dist node_modules",
-    "test:coverage": "jest --coverage --coverageReporters=cobertura --coverageReporters=lcov"
+    "clean": "rm -rf dist node_modules"
   },
   "devDependencies": {
     "express": "^4.18.0",
@@ -17,6 +16,7 @@
     "jest-junit": "^16.0.0"
   },
   "jest": {
+    "coverageReporters": ["text", "lcov", "cobertura"],
     "reporters": [
       "default",
       [
