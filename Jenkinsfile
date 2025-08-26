@@ -33,7 +33,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Exécution des tests...'
-                sh 'npm test --coverage'
+                sh 'npm test -- --coverage'
             }
             post {
                 always {
@@ -44,6 +44,7 @@ pipeline {
 
         stage('Coverage') {
             steps {
+                sh 'ls -la coverage/'  // debug pour vérifier le fichier
                 recordCoverage(
                     tools: [
                         [type: 'Cobertura', pattern: 'coverage/cobertura-coverage.xml']

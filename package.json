@@ -16,6 +16,7 @@
     "jest-junit": "^16.0.0"
   },
   "jest": {
+    "coverageDirectory": "coverage",
     "coverageReporters": ["text", "lcov", "cobertura"],
     "reporters": [
       "default",
