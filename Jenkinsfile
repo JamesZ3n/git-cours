@@ -140,23 +140,23 @@ pipeline {
         success {
             echo 'Pipeline exécuté avec succès!'
             withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
-                sh """
-                curl -H "Content-Type: application/json" \
-                    -X POST \
-                    -d '{"content":"✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})"}' \
-                    $DISCORD_WEBHOOK
-                """
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"✅ Build Success: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
             }
         }
         failure {
             echo 'Le pipeline a échoué!'
             withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
-                sh """
-                curl -H "Content-Type: application/json" \
-                    -X POST \
-                    -d '{"content":"❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})"}' \
-                    $DISCORD_WEBHOOK
-                """
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"❌ Build Failed: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
             }
         }
         unstable {
