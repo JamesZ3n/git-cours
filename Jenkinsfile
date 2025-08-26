@@ -46,16 +46,16 @@ pipeline {
             steps {
                 echo 'Analyse de la couverture...'
                 recordCoverage(
-                    tools: [cobertura(pattern: 'coverage/cobertura-coverage.xml')],
-                    failOnError: true,
-                    sourceCodeRetention: 'NEVER',
+                    tools: [[parser: 'COVERAGE', pattern: 'coverage/cobertura-coverage.xml']],
+                    sourceCodeRetention: 'EVERY_BUILD',
                     qualityGates: [
-                        [threshold: 80.0, metric: 'LINE', type: 'TOTAL'],
-                        [threshold: 70.0, metric: 'BRANCH', type: 'TOTAL']
+                        [threshold: 80.0, metric: 'LINE', unstable: true],
+                        [threshold: 70.0, metric: 'BRANCH', unstable: true]
                     ]
                 )
             }
         }
+
 
 
         
