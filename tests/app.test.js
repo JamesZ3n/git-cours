@@ -34,6 +34,6 @@ describe('Tests de la calculatrice', () => {
     });
 
     test('Multiplication des nombres (failed)', () => {
-        expect(squareNumber(2, 3)).toBe(5);
+        expect(squareNumber(2, 3)).toBe(6);
     });
 });
