@@ -32,4 +32,8 @@ describe('Tests de la calculatrice', () => {
         expect(isValidNumber(NaN)).toBe(false);
         expect(isValidNumber(Infinity)).toBe(false);
     });
+
+    test('Multiplication des nombres (failed)', () => {
+        expect(squareNumber(2, 3)).toBe(5);
+    });
 });
