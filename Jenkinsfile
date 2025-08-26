@@ -29,15 +29,21 @@ pipeline {
                 '''
             }
         }
-        
-        stage('Run Tests') {
+
+        stage('Run Tests with Coverage') {
             steps {
-                echo 'Exécution des tests...'
-                sh 'npm test'
+                sh 'npm run test:coverage'
             }
             post {
                 always {
                     junit 'test-results/junit.xml'
+                    publishCoverage adapters: [
+                        coberturaAdapter('coverage/cobertura-coverage.xml')
+                    ],
+                    globalThresholds: [
+                        [thresholdTarget: 'Line', unhealthyThreshold: 70.0, unstableThreshold: 80.0],
+                        [thresholdTarget: 'Branch', unhealthyThreshold: 60.0, unstableThreshold: 75.0]
+                    ]
                 }
             }
         }
