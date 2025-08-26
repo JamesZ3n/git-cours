@@ -125,5 +125,13 @@ Et ensuite j'ai rajouté des lignes dans le fichier package.json pour spécifier
 ```
 
 ### Exercice 2
-  
-  
+
+J'ai ajouté une branch develop, j'ai ensuite ajouté une fonction (pas utilisée) dans le fichier app.js, mais après avoir commit et push, je me suis apperçu que le déploiement staging ne fonctionnait pas.
+Je me suis également apperçu que le développement production ne fonctionnait pas.
+
+J'ai donc créé un nouvel item : pipeline multibranch.
+Cela m'a donc permis d'avoir une branch pour la production -> main et une branche pour staging -> develop.
+
+Je n'ai rien eu à modifier dans le fichier Jenkinsfile car il y avait dejà la condition "when" avec "branch develop" ou "branch main".
+
+### Exercice 3
