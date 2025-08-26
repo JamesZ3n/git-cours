@@ -135,3 +135,11 @@ Cela m'a donc permis d'avoir une branch pour la production -> main et une branch
 Je n'ai rien eu à modifier dans le fichier Jenkinsfile car il y avait dejà la condition "when" avec "branch develop" ou "branch main".
 
 ### Exercice 3
+
+Toujours sur develop,
+
+J'ai déplacé ma fonction "squareNumber" dans "utils.js" et ensuite j'ai créé un test qui fail pour vérifier que le stage "Tests" plante, donc le reste est skip.
+
+J'ai ensuite résolu ce test, qui vérifie qu'un nombre est mis au carré ".
+
+### Exercice 4

@@ -139,33 +139,25 @@ pipeline {
         }
         success {
             echo 'Pipeline exécuté avec succès!'
-            emailext (
-                subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                body: """
-                    Le déploiement de ${env.JOB_NAME} s'est terminé avec succès.
-                    
-                    Build: ${env.BUILD_NUMBER}
-                    Branch: ${env.BRANCH_NAME}
-                    
-                    Voir les détails: ${env.BUILD_URL}
-                """,
-                to: "${env.CHANGE_AUTHOR_EMAIL}"
-            )
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh """
+                curl -H "Content-Type: application/json" \
+                    -X POST \
+                    -d '{"content":"✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})"}' \
+                    $DISCORD_WEBHOOK
+                """
+            }
         }
         failure {
             echo 'Le pipeline a échoué!'
-            emailext (
-                subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                body: """
-                    Le déploiement de ${env.JOB_NAME} a échoué.
-                    
-                    Build: ${env.BUILD_NUMBER}
-                    Branch: ${env.BRANCH_NAME}
-                    
-                    Voir les détails: ${env.BUILD_URL}
-                """,
-                to: "${env.CHANGE_AUTHOR_EMAIL}"
-            )
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh """
+                curl -H "Content-Type: application/json" \
+                    -X POST \
+                    -d '{"content":"❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})"}' \
+                    $DISCORD_WEBHOOK
+                """
+            }
         }
         unstable {
             echo 'Build instable - des avertissements ont été détectés'
