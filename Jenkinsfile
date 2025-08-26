@@ -44,8 +44,11 @@ pipeline {
 
         stage('Coverage') {
             steps {
+                echo 'Publication du rapport de couverture...'
                 publishCoverage(
-                    adapters: [coberturaAdapter('coverage/cobertura-coverage.xml')],
+                    adapters: [
+                        coberturaAdapter('coverage/cobertura-coverage.xml')
+                    ],
                     sourceFileResolver: sourceFiles('STORE_ALL_BUILD'),
                     failOnError: true,
                     globalThresholds: [
@@ -53,6 +56,15 @@ pipeline {
                         [thresholdTarget: 'Branch', unhealthyThreshold: 50.0, unstableThreshold: 70.0]
                     ]
                 )
+
+                publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'coverage/lcov-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Coverage Report'
+                ])
             }
         }
         
