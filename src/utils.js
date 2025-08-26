@@ -15,6 +15,10 @@ function divideNumbers(a, b) {
     return a / b;
 }
 
+function squareNumber(num) {
+    return num * num;
+}
+
 // Fonction de validation
 function isValidNumber(value) {
     return !isNaN(value) && isFinite(value);
@@ -27,6 +31,7 @@ if (typeof module !== 'undefined' && module.exports) {
         subtractNumbers,
         multiplyNumbers,
         divideNumbers,
-        isValidNumber
+        isValidNumber,
+        squareNumber
     };
 }
