@@ -44,8 +44,16 @@ pipeline {
 
         stage('Coverage') {
             steps {
-                recordCoverage tools: [cobertura('coverage/cobertura-coverage.xml')]
-            }
+                echo 'Vérification de l’existence du fichier coverage/cobertura-coverage.xml...'
+                sh '''
+                    if [ -f coverage/cobertura-coverage.xml ]; then
+                        echo "✅ Fichier trouvé !"
+                    else
+                        echo "❌ Fichier introuvable !"
+                        exit 1
+                    fi
+                '''
+                    }
         }
 
         
