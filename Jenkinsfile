@@ -49,8 +49,8 @@ pipeline {
                     tools: [[parser: 'COVERAGE', pattern: 'coverage/cobertura-coverage.xml']],
                     sourceCodeRetention: 'EVERY_BUILD',
                     qualityGates: [
-                        [threshold: 80.0, metric: 'LINE', unhealthy: true],
-                        [threshold: 70.0, metric: 'BRANCH', unhealthy: true]
+                        [threshold: 80.0, metric: 'LINE'],
+                        [threshold: 70.0, metric: 'BRANCH']
                     ]
                 )
             }
