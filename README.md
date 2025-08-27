@@ -259,3 +259,25 @@ Une fois le build réalisé, on peut voir les artifacts :
 
 ![alt text](artifacts.png)
 
+### Exercice 5
+
+#### Questions de compréhension
+
+1. La différence entre `npm install` et `npm ci` est que la deuxieme commande va clean le dosssier node_modules avant d'installer les dépendances listées dans le package.json. (npm ci pour npm clean install)
+
+2. On utilise des conditions when dans le jenkinsfile pour exécuter un stage seulement si on est sur une branche précise. Dans notre cas, la branche main va executer la stage pour la mise en production, tandis que la branche develop va déployer en staging.
+
+3. Le bloc post va s'executer après les stages, en fonction du résultat du build.
+On peut ainsi faire différentes actions si le build est en succès, en failure, ou si il est instable (par exemple seuil de coverage pas atteint).
+
+4. L'intérêt de faire un backup avant un déploiement est qu'il est très facile de rollback si le déploiement échoue (étant donné que le déploiement va écraser les fichiers).
+
+#### Améliorations possibles
+
+1. Sécurité : On peut intégrer des scans de sécurité, j'utilise déjà `npm audit --audit-level=high` mais on peut utiliser Snyk ou OWASP Dependency-Check pour détecter plus de vulnérabilités.
+
+2. Performance : Pour optimiser le temps de build, on peut installer seulement les dépendances qui sont nécessaires avec `npm ci` au lieu de `npm install`, en encore mettre en cache les dépendances.
+
+3. Monitoring : Pour surveiller l'application après le déploiement, on vérifie déjà la santé de l'application dans le stage `Health check`, et on envoie déjà des notifications sur discord pour vérifier si le build a échoué ou non
+
+4. Rollback : Pour faire un mécanisme de retour arrière, on peut faire un script de rollback automatique si le health check échoue par exemple, ou encore versionner les builds
