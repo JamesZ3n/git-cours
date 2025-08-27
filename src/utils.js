@@ -19,6 +19,10 @@ function squareNumber(num) {
     return num * num;
 }
 
+function soustract1(num) {
+    return num - 1;
+}
+
 // Fonction de validation
 function isValidNumber(value) {
     return !isNaN(value) && isFinite(value);
@@ -31,6 +35,7 @@ if (typeof module !== 'undefined' && module.exports) {
         subtractNumbers,
         multiplyNumbers,
         divideNumbers,
-        isValidNumber
+        isValidNumber,
+        squareNumber
     };
 }
