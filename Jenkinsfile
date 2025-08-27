@@ -29,12 +29,6 @@ pipeline {
                 '''
             }
         }
-
-        stage('Clean Coverage') {
-            steps {
-                sh 'rm -rf coverage'
-            }
-        }
         
         stage('Run Tests') {
             steps {
