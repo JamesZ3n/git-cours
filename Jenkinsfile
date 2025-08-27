@@ -33,7 +33,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Exécution des tests...'
-                sh 'npm test:ci'
+                sh 'npm run test:ci'
             }
             post {
                 always {
