@@ -31,7 +31,6 @@ if (typeof module !== 'undefined' && module.exports) {
         subtractNumbers,
         multiplyNumbers,
         divideNumbers,
-        isValidNumber,
-        squareNumber
+        isValidNumber
     };
 }
