@@ -1,4 +1,4 @@
-const { addNumbers, subtractNumbers, multiplyNumbers, divideNumbers, isValidNumber, squareNumber } = require('../src/utils.js');
+const { addNumbers, subtractNumbers, multiplyNumbers, divideNumbers, isValidNumber } = require('../src/utils.js');
 
 describe('Tests de la calculatrice', () => {
     test('Addition de deux nombres', () => {
