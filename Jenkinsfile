@@ -33,7 +33,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Exécution des tests...'
-                sh 'npm test'
+                sh 'npm run test:ci'
             }
             post {
                 always {
@@ -41,6 +41,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Coverage') {
+    steps {
+        echo 'Analyse de la couverture...'
+        recordCoverage(
+            tools: [[
+                parser: 'COBERTURA',
+                pattern: 'coverage/cobertura-coverage.xml',
+            ]],
+            sourceCodeRetention: 'EVERY_BUILD',
+            qualityGates: [
+                [threshold: 80.0, metric: 'LINE'],
+                [threshold: 70.0, metric: 'BRANCH']
+            ]
+        )
+    }
+}
+
+
+
+
         
         stage('Code Quality Check') {
             steps {
@@ -60,6 +81,13 @@ pipeline {
                     npm run build
                     ls -la dist/
                 '''
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archivage des artifacts...'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
         
@@ -86,7 +114,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Deploy to Production') {
             
             when {
@@ -95,10 +123,6 @@ pipeline {
             steps {
                 echo 'Déploiement vers la production...'
                 sh '''
-                    echo "Utilisateur courant : $(whoami)"
-                    echo "UID/GID : $(id)"
-                    echo "Répertoire courant : $(pwd)"
-                    
                     echo "Sauvegarde de la version précédente..."
                     if [ -d "${DEPLOY_DIR}" ]; then
                         cp -r ${DEPLOY_DIR} ${DEPLOY_DIR}_backup_$(date +%Y%m%d_%H%M%S)
@@ -143,33 +167,25 @@ pipeline {
         }
         success {
             echo 'Pipeline exécuté avec succès!'
-            emailext (
-                subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                body: """
-                    Le déploiement de ${env.JOB_NAME} s'est terminé avec succès.
-                    
-                    Build: ${env.BUILD_NUMBER}
-                    Branch: ${env.BRANCH_NAME}
-                    
-                    Voir les détails: ${env.BUILD_URL}
-                """,
-                to: "${env.CHANGE_AUTHOR_EMAIL}"
-            )
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"✅ Build Success: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
+            }
         }
         failure {
             echo 'Le pipeline a échoué!'
-            emailext (
-                subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                body: """
-                    Le déploiement de ${env.JOB_NAME} a échoué.
-                    
-                    Build: ${env.BUILD_NUMBER}
-                    Branch: ${env.BRANCH_NAME}
-                    
-                    Voir les détails: ${env.BUILD_URL}
-                """,
-                to: "${env.CHANGE_AUTHOR_EMAIL}"
-            )
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"❌ Build Failed: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
+            }
         }
         unstable {
             echo 'Build instable - des avertissements ont été détectés'
