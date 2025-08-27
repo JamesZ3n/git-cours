@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "jest --coverage",
-    "test:ci": "jest --clearCache && jest --coverage --coverageReporters=cobertura",
+    "test:ci": "jest --coverage --coverageReporters=cobertura",
     "build": "npm run copy-files",
     "copy-files": "mkdir -p dist && cp -r src/* dist/",
     "clean": "rm -rf dist node_modules"
