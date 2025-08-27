@@ -244,5 +244,18 @@ Ensuite dans le build status on peut voir ceci :
 
 3. Archivage des artifacts
 
+Pour l'archivage des artifacts j'ai ajouté un nouveau stage "Archive Artifacts" après le stage du build :
 
+```
+ stage('Archive Artifacts') {
+            steps {
+                echo 'Archivage des artifacts...'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
+```
+
+Une fois le build réalisé, on peut voir les artifacts :
+
+![alt text](artifacts.png)
 
