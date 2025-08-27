@@ -83,6 +83,13 @@ pipeline {
                 '''
             }
         }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archivage des artifacts...'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
         
         stage('Security Scan') {
             steps {
