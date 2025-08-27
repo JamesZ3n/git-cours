@@ -49,12 +49,6 @@ pipeline {
             tools: [[
                 parser: 'COBERTURA',
                 pattern: 'coverage/cobertura-coverage.xml',
-                failUnhealthy: true,
-                failUnstable: true,
-                autoUpdateHealth: true,
-                autoUpdateStability: true,
-                skipNoFiles: false,
-                sourceEncoding: 'UTF-8'
             ]],
             sourceCodeRetention: 'EVERY_BUILD',
             qualityGates: [
