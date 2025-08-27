@@ -43,21 +43,28 @@ pipeline {
         }
 
         stage('Coverage') {
-            steps {
-                echo 'Analyse de la couverture...'
-                sh 'npm run test:ci'
-                sh 'cat coverage/cobertura-coverage.xml'
-        // recordCoverage lit le XML ensuite
-                // recordCoverage(
-                //     tools: [[parser: 'COBERTURA', pattern: 'coverage/cobertura-coverage.xml']],
-                //     sourceCodeRetention: 'EVERY_BUILD',
-                //     qualityGates: [
-                //         [threshold: 80.0, metric: 'LINE'],
-                //         [threshold: 70.0, metric: 'BRANCH']
-                //     ]
-                // )
-            }
-        }
+    steps {
+        echo 'Analyse de la couverture...'
+        recordCoverage(
+            tools: [[
+                parser: 'COBERTURA',
+                pattern: 'coverage/cobertura-coverage.xml',
+                failUnhealthy: true,       // échoue si thresholds non atteints
+                failUnstable: true,        // instable si thresholds non atteints
+                autoUpdateHealth: true,    // met à jour le % santé
+                autoUpdateStability: true, // met à jour le % stabilité
+                skipNoFiles: false,        // ne pas ignorer fichiers manquants
+                sourceEncoding: 'UTF-8'    // pour lire correctement les fichiers
+            ]],
+            sourceCodeRetention: 'EVERY_BUILD',
+            qualityGates: [
+                [threshold: 80.0, metric: 'LINE'],
+                [threshold: 70.0, metric: 'BRANCH']
+            ]
+        )
+    }
+}
+
 
 
 
