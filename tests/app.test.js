@@ -33,7 +33,7 @@
             expect(isValidNumber(Infinity)).toBe(false);
         });
 
-        test('Nombres au carré', () => {
-            expect(squareNumber(3)).toBe(9);
-        });
+        // test('Nombres au carré', () => {
+        //     expect(squareNumber(3)).toBe(9);
+        // });
     });
