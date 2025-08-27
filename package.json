@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "jest --coverage",
-    "test:ci": "jest --coverage --coverageReporters=cobertura --collectCoverageFrom='src/*.js'",
+    "test:ci": "jest --coverage --coverageReporters=cobertura",
     "build": "npm run copy-files",
     "copy-files": "mkdir -p dist && cp -r src/* dist/",
     "clean": "rm -rf dist node_modules"
@@ -17,6 +17,10 @@
     "jest-junit": "^16.0.0"
   },
   "jest": {
+    "collectCoverageFrom": [
+    "src/**/*.js",
+    "!src/index.js"
+  ],
     "reporters": [
       "default",
       [
