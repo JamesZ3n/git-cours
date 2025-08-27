@@ -1,4 +1,4 @@
-    const { addNumbers, subtractNumbers, multiplyNumbers, divideNumbers, isValidNumber } = require('../src/utils.js');
+    const { addNumbers, subtractNumbers, multiplyNumbers, divideNumbers, isValidNumber, squareNumber } = require('../src/utils.js');
 
     describe('Tests de la calculatrice', () => {
         test('Addition de deux nombres', () => {
@@ -33,7 +33,7 @@
             expect(isValidNumber(Infinity)).toBe(false);
         });
 
-        // test('Nombres au carré', () => {
-        //     expect(squareNumber(3)).toBe(9);
-        // });
+        test('Nombres au carré', () => {
+            expect(squareNumber(3)).toBe(9);
+        });
     });

@@ -49,12 +49,12 @@ pipeline {
             tools: [[
                 parser: 'COBERTURA',
                 pattern: 'coverage/cobertura-coverage.xml',
-                failUnhealthy: true,       // échoue si thresholds non atteints
-                failUnstable: true,        // instable si thresholds non atteints
-                autoUpdateHealth: true,    // met à jour le % santé
-                autoUpdateStability: true, // met à jour le % stabilité
-                skipNoFiles: false,        // ne pas ignorer fichiers manquants
-                sourceEncoding: 'UTF-8'    // pour lire correctement les fichiers
+                failUnhealthy: true,
+                failUnstable: true,
+                autoUpdateHealth: true,
+                autoUpdateStability: true,
+                skipNoFiles: false,
+                sourceEncoding: 'UTF-8'
             ]],
             sourceCodeRetention: 'EVERY_BUILD',
             qualityGates: [
