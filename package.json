@@ -17,6 +17,10 @@
     "jest-junit": "^16.0.0"
   },
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
     "reporters": [
       "default",
       [
