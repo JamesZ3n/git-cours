@@ -135,3 +135,149 @@ Cela m'a donc permis d'avoir une branch pour la production -> main et une branch
 Je n'ai rien eu à modifier dans le fichier Jenkinsfile car il y avait dejà la condition "when" avec "branch develop" ou "branch main".
 
 ### Exercice 3
+
+Toujours sur develop,
+
+J'ai déplacé ma fonction "squareNumber" dans "utils.js" et ensuite j'ai créé un test qui fail pour vérifier que le stage "Tests" plante, donc le reste est skip.
+
+J'ai ensuite résolu ce test, qui vérifie qu'un nombre est mis au carré ".
+
+### Exercice 4
+
+1. Ajout de notifications
+
+Lorsque l'application est bien déployé, je veux avoir un message envoyé sur Discord. Donc j'ai créé un serveur discord, et un webhook sur ce serveur discord. Ensuite, j'ai complété le "success" dans le jenkinsfile :
+
+```
+success {
+            echo 'Pipeline exécuté avec succès!'
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"✅ Build Success: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
+            }
+        }
+```
+
+Ici j'utilise "withCredentials" pour utiliser les secrets définis dans jenkins. Et j'utilise 'discord-webhook-url' pour ensuite executer une commande curl et poster mon message sur mon serveur discord.
+J'utilise les secrets sur jenkins pour éviter de push directement l'url de mon webhook, pour éviter que tout le monde puisse avoir ce lien et l'utiliser pour poster des messages.
+
+
+Je fais ainsi la même chose quand il y a un fail :
+
+```
+failure {
+            echo 'Le pipeline a échoué!'
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK')]) {
+                sh(script: """
+                    curl -H "Content-Type: application/json" \
+                        -X POST \
+                        -d '{"content":"❌ Build Failed: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})"}' \
+                        "\$DISCORD_WEBHOOK"
+                """)
+            }
+        }
+```
+
+Voici les messages qui sont envoyés dans le build réussi ou échoue :
+
+![alt text](discord_webhook.png)
+
+2. Coverage
+
+Pour le coverage, j'ai installé le plugin "Coverage" sur jenkins.
+Ensuite j'ai ajouté la ligne suivante dans la partie scripts dans le package.json:
+```
+"test:ci": "jest --coverage --coverageReporters=cobertura",
+```
+
+Cette ligne va permettre de générer un rapport cobertura en .xml quand on va faire la commande npm run test:ci, en plus d'executer les tests.
+
+J'ai donc modifié mon stage "Tests" comme ceci :
+```
+  stage('Run Tests') {
+            steps {
+                echo 'Exécution des tests...'
+                sh 'npm run test:ci'
+            }
+            post {
+                always {
+                    junit 'test-results/junit.xml'
+                }
+            }
+        }
+```
+
+Ce stage va donc lancer la génération du rapport .xml
+
+Puis j'ai créé un nouveau stage "Coverage" qui va venir lire le rapport .xml cobertura et ainsi générer le coverage sur jenkins.
+
+```
+ stage('Coverage') {
+    steps {
+        echo 'Analyse de la couverture...'
+        recordCoverage(
+            tools: [[
+                parser: 'COBERTURA',
+                pattern: 'coverage/cobertura-coverage.xml',
+            ]],
+            sourceCodeRetention: 'EVERY_BUILD',
+            qualityGates: [
+                [threshold: 80.0, metric: 'LINE'],
+                [threshold: 70.0, metric: 'BRANCH']
+            ]
+        )
+    }
+}
+```
+
+J'ai défini un seuil de 80% pour les lignes et 70% sur la branche pour que le build soit validé.
+
+Ensuite dans le build status on peut voir ceci :
+
+![alt text](coverage_report.png)
+
+![alt text](code_coverage_trend.png)
+
+3. Archivage des artifacts
+
+Pour l'archivage des artifacts j'ai ajouté un nouveau stage "Archive Artifacts" après le stage du build :
+
+```
+ stage('Archive Artifacts') {
+            steps {
+                echo 'Archivage des artifacts...'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
+```
+
+Une fois le build réalisé, on peut voir les artifacts :
+
+![alt text](artifacts.png)
+
+### Exercice 5
+
+#### Questions de compréhension
+
+1. La différence entre `npm install` et `npm ci` est que la deuxieme commande va clean le dosssier node_modules avant d'installer les dépendances listées dans le package.json. (npm ci pour npm clean install)
+
+2. On utilise des conditions when dans le jenkinsfile pour exécuter un stage seulement si on est sur une branche précise. Dans notre cas, la branche main va executer la stage pour la mise en production, tandis que la branche develop va déployer en staging.
+
+3. Le bloc post va s'executer après les stages, en fonction du résultat du build.
+On peut ainsi faire différentes actions si le build est en succès, en failure, ou si il est instable (par exemple seuil de coverage pas atteint).
+
+4. L'intérêt de faire un backup avant un déploiement est qu'il est très facile de rollback si le déploiement échoue (étant donné que le déploiement va écraser les fichiers).
+
+#### Améliorations possibles
+
+1. Sécurité : On peut intégrer des scans de sécurité, j'utilise déjà `npm audit --audit-level=high` mais on peut utiliser Snyk ou OWASP Dependency-Check pour détecter plus de vulnérabilités.
+
+2. Performance : Pour optimiser le temps de build, on peut installer seulement les dépendances qui sont nécessaires avec `npm ci` au lieu de `npm install`, en encore mettre en cache les dépendances.
+
+3. Monitoring : Pour surveiller l'application après le déploiement, on vérifie déjà la santé de l'application dans le stage `Health check`, et on envoie déjà des notifications sur discord pour vérifier si le build a échoué ou non
+
+4. Rollback : Pour faire un mécanisme de retour arrière, on peut faire un script de rollback automatique si le health check échoue par exemple, ou encore versionner les builds
