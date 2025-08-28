@@ -134,6 +134,10 @@ Cela m'a donc permis d'avoir une branch pour la production -> main et une branch
 
 Je n'ai rien eu à modifier dans le fichier Jenkinsfile car il y avait dejà la condition "when" avec "branch develop" ou "branch main".
 
+J'ai donc maintenant mon déploiement de la branche main qui se fait sur localhost/mon-app/main et mon déploiement de la branche develop qui se fait sur la branche develop.
+
+J'en ai aussi profité pour ajouté des lignes pour le stage Health stage, ainsi je peux vérifier si mon application a bien été déployé.
+
 ### Exercice 3
 
 Toujours sur develop,
