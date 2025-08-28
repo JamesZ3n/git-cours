@@ -162,7 +162,7 @@ pipeline {
 
                     // Récupérer le code HTTP
                     def status = sh(
-                        script: "curl -o /dev/null -s -w '%{http_code}' ${url}",
+                        script: "curl -L -o /dev/null -s -w '%{http_code}' ${url}",
                         returnStdout: true
                     ).trim()
 
