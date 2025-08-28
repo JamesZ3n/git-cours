@@ -108,9 +108,17 @@ pipeline {
             steps {
                 echo 'Déploiement vers l\'environnement de staging...'
                 sh '''
-                    echo "Déploiement staging simulé"
-                    mkdir -p staging
-                    cp -r dist/* staging/
+                    echo "Sauvegarde de la version précédente..."
+                    if [ -d "${DEPLOY_DIR}" ]; then
+                        cp -r ${DEPLOY_DIR} ${DEPLOY_DIR}_develop_backup_$(date +%Y%m%d_%H%M%S)
+                    fi
+                    
+                    echo "Déploiement de la nouvelle version..."
+                    mkdir -p ${DEPLOY_DIR}/develop
+                    cp -r dist/* ${DEPLOY_DIR}/develop/
+                    
+                    echo "Vérification du déploiement..."
+                    ls -la ${DEPLOY_DIR}
                 '''
             }
         }
@@ -125,12 +133,12 @@ pipeline {
                 sh '''
                     echo "Sauvegarde de la version précédente..."
                     if [ -d "${DEPLOY_DIR}" ]; then
-                        cp -r ${DEPLOY_DIR} ${DEPLOY_DIR}_backup_$(date +%Y%m%d_%H%M%S)
+                        cp -r ${DEPLOY_DIR} ${DEPLOY_DIR}_main_backup_$(date +%Y%m%d_%H%M%S)
                     fi
                     
                     echo "Déploiement de la nouvelle version..."
-                    mkdir -p ${DEPLOY_DIR}
-                    cp -r dist/* ${DEPLOY_DIR}/
+                    mkdir -p ${DEPLOY_DIR}/main
+                    cp -r dist/* ${DEPLOY_DIR}/main/
                     
                     echo "Vérification du déploiement..."
                     ls -la ${DEPLOY_DIR}
@@ -142,15 +150,27 @@ pipeline {
             steps {
                 echo 'Vérification de santé de l\'application...'
                 script {
-                    try {
-                        sh '''
-                            echo "Test de connectivité..."
-                            # Simulation d'un health check
-                            echo "Application déployée avec succès"
-                        '''
-                    } catch (Exception e) {
+                    // Choisir l'URL en fonction de la branche
+                    def url = "http://localhost/mon-app/"
+                    if (env.BRANCH_NAME == "develop") {
+                        url += "develop"
+                    } else if (env.BRANCH_NAME == "main") {
+                        url += "main"
+                    }
+
+                    echo "🔎 Health check sur: ${url}"
+
+                    // Récupérer le code HTTP
+                    def status = sh(
+                        script: "curl -L -o /dev/null -s -w '%{http_code}' ${url}",
+                        returnStdout: true
+                    ).trim()
+
+                    if (status == '200') {
+                        echo "✅ Application OK (HTTP ${status})"
+                    } else {
+                        echo "❌ Application KO (HTTP ${status})"
                         currentBuild.result = 'UNSTABLE'
-                        echo "Warning: Health check failed: ${e.getMessage()}"
                     }
                 }
             }
